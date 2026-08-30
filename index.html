@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ashley's Carnival Rush — Everything on the ticket. Nothing else.</title>
+<meta name="description" content="A carnival food-stand memory rush for iOS. Customers order by ticket — build the tray exactly right, serve it fast, keep the streak alive. One extra pickle and it's coming back.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23291A4D'/%3E%3Cstop offset='0.5' stop-color='%236B2459'/%3E%3Cstop offset='1' stop-color='%23B84247'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M14 24 h36 a4 4 0 0 1 4 4 v2 h-44 v-2 a4 4 0 0 1 4 -4 z' fill='%23DE3D4D'/%3E%3Cpath d='M10 26 l6 -2 v6 l-6 -2 z M50 26 l6 -2 v6 l-6 -2 z' fill='%23DE3D4D'/%3E%3Crect x='14' y='30' width='9' height='6' fill='%23EDF2F7'/%3E%3Crect x='23' y='30' width='9' height='6' fill='%23DE3D4D'/%3E%3Crect x='32' y='30' width='9' height='6' fill='%23EDF2F7'/%3E%3Crect x='41' y='30' width='9' height='6' fill='%23DE3D4D'/%3E%3Ccircle cx='32' cy='48' r='6' fill='%23FCD959'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ashley's Carnival Rush">
+<meta property="og:title" content="Ashley's Carnival Rush — Everything on the ticket. Nothing else.">
+<meta property="og:description" content="A carnival food-stand memory rush for iOS. Build the tray exactly right, serve it fast, keep the streak alive.">
+
+<style>
+  :root{
+    /* Exact palette pulled from CarnivalBackground / Balance.swift / the app's
+       own accent colors — this site borrows the game's real colors rather
+       than inventing new ones. */
+    --purple-deep:  #291A4D;
+    --magenta:      #6B2459;
+    --sunset:       #B84247;
+    --gold:         #FCD959;
+    --red:          #DE3D4D;
+    --red-deep:     #B8303E;
+    --stripe-white: #EDF2F7;
+    --good:         #70D670;
+    --warn:         #FC9E3D;
+    --danger:       #FA4747;
+    --ink:          #1C1230;
+    --cream:        #FFF7EC;
+    --cream-dim:    rgba(255,247,236,.72);
+
+    --font-display: 'Bungee', 'Arial Black', sans-serif;
+    --font-body: 'Fredoka', system-ui, sans-serif;
+
+    --ease-snap: cubic-bezier(.16,1,.3,1);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; overscroll-behavior-x:none; }
+  body{
+    font-family:var(--font-body);
+    color:var(--cream);
+    background:var(--purple-deep);
+    line-height:1.6;
+    overflow-x:hidden;
+    overscroll-behavior-x:none;
+  }
+  a{ color:inherit; text-decoration:none; }
+  img,svg{ display:block; max-width:100%; }
+  button{ font:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+
+  a:focus-visible, button:focus-visible{
+    outline:3px solid var(--gold); outline-offset:3px; border-radius:4px;
+  }
+
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 32px; }
+
+  /* ============================================================
+     AMBIENT BACKGROUND — the same gradient the game itself uses,
+     stretched behind the whole page with a couple of soft glows and
+     a scattering of "midway lights" so it reads as one continuous
+     fairground sky rather than a page with a color applied to it.
+     ============================================================ */
+  .sky{
+    position:fixed; inset:0; z-index:-2;
+    background:linear-gradient(180deg, var(--purple-deep) 0%, var(--magenta) 52%, var(--sunset) 100%);
+  }
+  .sky::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 700px 500px at 12% 8%, rgba(252,217,89,.10), transparent 60%),
+      radial-gradient(ellipse 600px 480px at 92% 30%, rgba(222,61,77,.16), transparent 60%),
+      radial-gradient(ellipse 900px 600px at 50% 100%, rgba(255,150,90,.10), transparent 65%);
+  }
+  .bulbs{ position:fixed; inset:0; z-index:-1; pointer-events:none; }
+  .bulb{
+    position:absolute; width:5px; height:5px; border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 8px 2px rgba(252,217,89,.7);
+    animation:twinkle 3.4s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{ opacity:.25; transform:scale(.85); }
+    50%{ opacity:1; transform:scale(1.15); }
+  }
+
+  /* ============================================================
+     NAV
+     ============================================================ */
+  header.site-nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 32px;
+    background:linear-gradient(to bottom, rgba(41,26,77,.92) 45%, transparent);
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-mark{ width:30px; height:30px; flex-shrink:0; }
+  .brand-word{
+    font-family:var(--font-display); font-size:.82rem;
+    letter-spacing:.03em; color:var(--cream);
+    line-height:1.15;
+  }
+  .brand-word small{ display:block; font-size:.6rem; color:var(--gold); letter-spacing:.14em; }
+
+  .nav-links{ display:flex; align-items:center; gap:28px; }
+  .nav-links a{
+    font-size:.85rem; font-weight:600; color:var(--cream-dim);
+    transition:color .2s var(--ease-snap);
+  }
+  .nav-links a:hover{ color:var(--gold); }
+
+  .nav-cta{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--red);
+    color:var(--cream);
+    padding:10px 18px;
+    border-radius:999px;
+    font-size:.78rem; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+    box-shadow:0 6px 16px -6px rgba(222,61,77,.7);
+    transition:transform .18s var(--ease-snap), box-shadow .18s var(--ease-snap);
+  }
+  .nav-cta:hover{ transform:translateY(-2px); box-shadow:0 10px 22px -6px rgba(222,61,77,.8); }
+  .nav-cta:active{ transform:scale(.95); transition-duration:.08s; }
+
+  /* ============================================================
+     HERO
+     ============================================================ */
+  .hero{
+    padding:150px 0 90px;
+    position:relative;
+  }
+  .hero-grid{
+    display:grid; grid-template-columns:1.05fr .95fr;
+    gap:50px; align-items:center;
+  }
+  .hero-eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-size:.72rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:22px;
+  }
+  .hero-eyebrow::before{ content:"🎟"; font-size:1rem; }
+
+  .hero h1{
+    font-family:var(--font-display);
+    font-size:clamp(2.1rem, 4.6vw, 3.6rem);
+    line-height:1.14;
+    color:var(--cream);
+    text-shadow:0 4px 0 rgba(0,0,0,.18);
+  }
+  .hero h1 .hi{ color:var(--gold); }
+
+  .hero p.sub{
+    margin-top:22px;
+    max-width:480px;
+    font-size:1.08rem;
+    color:var(--cream-dim);
+  }
+  .hero p.sub b{ color:var(--cream); font-weight:600; }
+
+  .hero-ctas{ display:flex; gap:16px; margin-top:36px; flex-wrap:wrap; align-items:center; }
+
+  .badge{
+    display:flex; align-items:center; gap:10px;
+    background:rgba(0,0,0,.22);
+    border:1px solid rgba(255,255,255,.18);
+    padding:12px 20px;
+    border-radius:12px;
+    transition:transform .2s var(--ease-snap), border-color .2s var(--ease-snap);
+  }
+  .badge:hover{ transform:translateY(-2px); border-color:var(--gold); }
+  .badge:active{ transform:translateY(0) scale(.96); transition-duration:.08s; }
+  .badge svg{ width:20px; height:20px; flex-shrink:0; }
+  .badge-text{ display:flex; flex-direction:column; line-height:1.2; }
+  .badge-text small{ font-size:.62rem; color:var(--cream-dim); letter-spacing:.04em; }
+  .badge-text strong{ font-size:.95rem; font-weight:700; }
+
+  .hero-note{ font-size:.82rem; color:var(--cream-dim); }
+
+  /* ── Living HUD mockup — a faithful recreation of the real in-app
+       screen (same shapes, same colors), not an invented "app store
+       screenshot." Nothing here is a placeholder: every color and
+       label traces back to Balance.swift / the real Views. ── */
+  .phone-stage{ display:flex; justify-content:center; }
+  .phone{
+    width:min(320px, 84vw);
+    aspect-ratio:9/16.4;
+    background:#0c0c14;
+    border-radius:44px;
+    padding:12px;
+    box-shadow:
+      0 40px 80px -20px rgba(0,0,0,.6),
+      0 0 0 1px rgba(252,217,89,.15),
+      0 0 50px -10px rgba(222,61,77,.4);
+  }
+  .phone-screen{
+    position:relative;
+    width:100%; height:100%;
+    border-radius:32px;
+    overflow:hidden;
+    background:linear-gradient(180deg, var(--purple-deep) 0%, var(--magenta) 55%, var(--sunset) 100%);
+    display:flex; flex-direction:column;
+  }
+  .phone-notch{
+    position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    width:34%; height:18px; background:#0c0c14; border-radius:0 0 12px 12px; z-index:5;
+  }
+
+  .mock-hud{
+    display:flex; align-items:center; gap:8px;
+    padding:26px 12px 8px;
+    background:rgba(0,0,0,.22);
+  }
+  .mock-clock{
+    font-family:var(--font-body); font-weight:800; font-size:1.1rem;
+    color:var(--cream); font-variant-numeric:tabular-nums;
+  }
+  .mock-clock.urgent{ color:var(--danger); }
+  .mock-stat{ display:flex; flex-direction:column; align-items:center; margin-left:auto; }
+  .mock-stat b{ font-size:.72rem; color:var(--cream); font-variant-numeric:tabular-nums; }
+  .mock-stat span{ font-size:.5rem; color:var(--cream-dim); }
+  .mock-streak{ color:var(--gold); font-weight:800; font-size:.72rem; margin-left:8px; }
+  .mock-pips{ display:flex; gap:3px; margin-left:8px; }
+  .mock-pips i{ width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.22); display:block; }
+  .mock-pips i.lost{ background:var(--danger); }
+
+  .mock-seats{ display:flex; gap:6px; padding:8px; height:36%; }
+  .mock-seat{
+    flex:1; background:rgba(255,255,255,.1); border-radius:10px;
+    padding:6px 5px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+    position:relative;
+  }
+  .mock-seat .ticket-title{ font-size:.5rem; font-weight:700; text-align:center; color:var(--cream); }
+  .mock-ticket-icons{ display:flex; gap:2px; background:rgba(0,0,0,.25); border-radius:6px; padding:3px 4px; }
+  .mock-ticket-icons i{ width:9px; height:9px; border-radius:3px; display:block; }
+  .mock-patience{ width:90%; height:3px; border-radius:3px; background:rgba(255,255,255,.15); overflow:hidden; margin-top:2px; }
+  .mock-patience b{ display:block; height:100%; border-radius:3px; }
+
+  .mock-tray{
+    margin:6px 8px; height:34px; border-radius:10px;
+    background:rgba(0,0,0,.25);
+    display:flex; align-items:center; gap:6px; padding:0 10px;
+  }
+  .mock-tray i{ width:16px; height:16px; border-radius:4px; flex-shrink:0; }
+
+  .mock-palette{
+    margin-top:14px; padding:6px 10px 20px;
+    display:grid; grid-template-columns:repeat(5,1fr); grid-template-rows:repeat(2,1fr); gap:7px;
+    flex:1;
+  }
+  .mock-ing{
+    background:rgba(255,255,255,.09); border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .mock-ing i{ width:20px; height:20px; border-radius:5px; }
+
+  /* ============================================================
+     SECTION SCAFFOLDING
+     ============================================================ */
+  section{ position:relative; padding:100px 0; }
+  .section-head{ max-width:640px; margin-bottom:56px; }
+  .section-head.center{ margin-left:auto; margin-right:auto; text-align:center; }
+  .kicker{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:.72rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:16px;
+  }
+  .section-head h2{
+    font-family:var(--font-display);
+    font-size:clamp(1.7rem, 3.4vw, 2.5rem);
+    line-height:1.22;
+    color:var(--cream);
+  }
+  .section-head p{ margin-top:16px; color:var(--cream-dim); font-size:1.02rem; }
+
+  /* ============================================================
+     HOW TO PLAY — ticket stubs
+     ============================================================ */
+  .rules{
+    display:grid; grid-template-columns:repeat(5, 1fr); gap:18px;
+  }
+  .rule-ticket{
+    position:relative;
+    background:rgba(255,255,255,.08);
+    border:1.5px dashed rgba(255,247,236,.35);
+    border-radius:14px;
+    padding:26px 16px 20px;
+    text-align:center;
+  }
+  .rule-ticket::before, .rule-ticket::after{
+    content:""; position:absolute; width:16px; height:16px; border-radius:50%;
+    background:var(--purple-deep); top:50%; transform:translateY(-50%);
+  }
+  .rule-ticket::before{ left:-8px; }
+  .rule-ticket::after{ right:-8px; }
+  .rule-num{
+    display:flex; align-items:center; justify-content:center;
+    width:34px; height:34px; margin:0 auto 12px;
+    border-radius:50%; background:var(--red);
+    font-family:var(--font-display); font-size:1rem; color:var(--cream);
+  }
+  .rule-ticket p{ font-size:.86rem; color:var(--cream-dim); }
+
+  /* ============================================================
+     MECHANICS — 3 cards, real numbers from Balance.swift
+     ============================================================ */
+  .mech-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(255,247,236,.1); border:1px solid rgba(255,247,236,.1); border-radius:18px; overflow:hidden; }
+  .mech-card{ background:rgba(41,26,77,.55); padding:38px 30px; }
+  .mech-glyph{
+    width:44px; height:44px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(252,217,89,.14);
+    font-size:1.3rem; margin-bottom:20px;
+  }
+  .mech-card h3{ font-family:var(--font-display); font-size:1.05rem; color:var(--cream); margin-bottom:12px; letter-spacing:.01em; }
+  .mech-card p{ font-size:.92rem; color:var(--cream-dim); }
+  .mech-card p b{ color:var(--gold); font-weight:700; }
+
+  /* ============================================================
+     MENU
+     ============================================================ */
+  .menu-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; }
+  .menu-item{
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,247,236,.1);
+    border-radius:16px;
+    padding:22px 20px;
+    display:flex; align-items:center; gap:16px;
+    transition:transform .2s var(--ease-snap), background .2s var(--ease-snap);
+  }
+  .menu-item:hover{ transform:translateY(-3px); background:rgba(255,255,255,.11); }
+  .menu-icon{
+    width:52px; height:52px; border-radius:14px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .menu-icon i{ width:52%; height:52%; border-radius:5px; }
+  .menu-item h4{ font-size:1rem; font-weight:700; color:var(--cream); margin-bottom:3px; }
+  .menu-item .price{ font-size:.85rem; color:var(--gold); font-weight:700; font-variant-numeric:tabular-nums; }
+
+  /* ============================================================
+     STATS STRIP
+     ============================================================ */
+  .stats{
+    border-top:1px solid rgba(255,247,236,.14);
+    border-bottom:1px solid rgba(255,247,236,.14);
+    padding:52px 0;
+  }
+  .stats-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:28px; text-align:center; }
+  .stat .num{
+    font-family:var(--font-display); font-size:2.1rem; color:var(--gold);
+  }
+  .stat .label{ margin-top:8px; font-size:.78rem; color:var(--cream-dim); }
+
+  /* ============================================================
+     CLOSING CTA
+     ============================================================ */
+  .closing{ text-align:center; padding:120px 0; }
+  .closing h2{
+    font-family:var(--font-display);
+    font-size:clamp(1.8rem, 4vw, 2.8rem);
+    color:var(--cream);
+    max-width:680px; margin:0 auto 18px;
+    line-height:1.2;
+  }
+  .closing p{ color:var(--cream-dim); max-width:480px; margin:0 auto 34px; }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer{ border-top:1px solid rgba(255,247,236,.12); padding:40px 0; }
+  .footer-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:18px; }
+  .footer-links{ display:flex; gap:24px; }
+  .footer-links a{ font-size:.8rem; color:var(--cream-dim); transition:color .2s; }
+  .footer-links a:hover{ color:var(--gold); }
+  footer p{ font-size:.76rem; color:var(--cream-dim); }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width:920px){
+    .hero-grid{ grid-template-columns:1fr; text-align:center; }
+    .hero p.sub{ margin-left:auto; margin-right:auto; }
+    .hero-ctas{ justify-content:center; }
+    .rules{ grid-template-columns:repeat(2,1fr); }
+    .mech-grid{ grid-template-columns:1fr; }
+    .menu-grid{ grid-template-columns:1fr; }
+    .stats-row{ grid-template-columns:repeat(2,1fr); row-gap:32px; }
+    .nav-links{ display:none; }
+    .footer-row{ flex-direction:column; text-align:center; }
+  }
+  @media (max-width:600px){
+    .rules{ grid-template-columns:1fr; }
+  }
+  @media (max-width:400px){
+    header.site-nav{ padding:16px; }
+    .nav-cta{ padding:8px 14px; font-size:.7rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .bulb{ animation:none; opacity:.6; }
+    * { transition-duration:.001ms !important; animation-duration:.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sky"></div>
+<div class="bulbs" id="bulbs"></div>
+
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<header class="site-nav">
+  <a href="#top" class="brand">
+    <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+      <defs><linearGradient id="navg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#291A4D"/><stop offset="1" stop-color="#B84247"/>
+      </linearGradient></defs>
+      <rect width="64" height="64" rx="14" fill="url(#navg)"/>
+      <path d="M14 24 h36 a4 4 0 0 1 4 4 v2 h-44 v-2 a4 4 0 0 1 4 -4 z" fill="#DE3D4D"/>
+      <rect x="14" y="30" width="9" height="6" fill="#EDF2F7"/>
+      <rect x="23" y="30" width="9" height="6" fill="#DE3D4D"/>
+      <rect x="32" y="30" width="9" height="6" fill="#EDF2F7"/>
+      <rect x="41" y="30" width="9" height="6" fill="#DE3D4D"/>
+      <circle cx="32" cy="48" r="6" fill="#FCD959"/>
+    </svg>
+    <span class="brand-word">ASHLEY'S<small>CARNIVAL RUSH</small></span>
+  </a>
+  <nav class="nav-links">
+    <a href="#how-to-play">How to Play</a>
+    <a href="#mechanics">The Rush</a>
+    <a href="#menu">Menu</a>
+  </nav>
+  <a class="nav-cta" href="#top">Coming Soon</a>
+</header>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="hero-eyebrow">Carnival Food Stand · iOS · Coming Soon</span>
+      <h1>Everything on the ticket. <span class="hi">Nothing else.</span></h1>
+      <p class="sub">
+        A carnival food-stand memory rush. Every customer hands you a ticket —
+        tap the exact ingredients onto your tray, serve it fast, and don't let
+        the streak drop. <b>One extra pickle and it's coming back.</b>
+      </p>
+      <div class="hero-ctas">
+        <a class="badge" href="#" aria-label="Coming to the App Store">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.7 12.6c0-2.9 2.4-4.3 2.5-4.4-1.4-2-3.5-2.3-4.2-2.3-1.8-.2-3.5 1-4.4 1-.9 0-2.3-1-3.8-1-2 0-3.8 1.1-4.8 2.9-2.1 3.6-.5 8.9 1.5 11.8 1 1.4 2.1 3 3.6 2.9 1.5-.1 2-.9 3.7-.9s2.2.9 3.8.9c1.6 0 2.6-1.4 3.5-2.9.7-1.1 1.2-2.2 1.4-2.3-.1 0-2.8-1.1-2.8-4.3zm-3-8.5c.8-1 1.4-2.3 1.2-3.7-1.2.1-2.6.8-3.4 1.8-.8.9-1.5 2.3-1.3 3.6 1.3.1 2.7-.6 3.5-1.7z"/></svg>
+          <span class="badge-text"><small>Coming to the</small><strong>App Store</strong></span>
+        </a>
+        <span class="hero-note">Free to play. No ads, no purchases — yet.</span>
+      </div>
+    </div>
+
+    <div class="phone-stage">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div class="mock-hud">
+            <span class="mock-clock" id="mockClock">1:47</span>
+            <span class="mock-stat"><b id="mockEarn">$14.50</b><span>Earned</span></span>
+            <span class="mock-streak" id="mockStreak">×3</span>
+            <span class="mock-pips" id="mockPips"><i></i><i></i><i></i></span>
+          </div>
+          <div class="mock-seats" id="mockSeats"></div>
+          <div class="mock-tray" id="mockTray"></div>
+          <div class="mock-palette" id="mockPalette"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     HOW TO PLAY — the actual in-game rules, verbatim
+     ============================================================ -->
+<section id="how-to-play">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="kicker">— How to Play —</span>
+      <h2>Five rules. That's the whole game.</h2>
+    </div>
+    <div class="rules">
+      <div class="rule-ticket">
+        <div class="rule-num">1</div>
+        <p>Customers arrive with an order. The ticket lists exactly what they want.</p>
+      </div>
+      <div class="rule-ticket">
+        <div class="rule-num">2</div>
+        <p>Tap ingredients to build the order on your tray. The order you tap them in doesn't matter.</p>
+      </div>
+      <div class="rule-ticket">
+        <div class="rule-num">3</div>
+        <p>Tap the customer to serve them. Everything on the ticket, and nothing else — an extra pickle is a wrong order.</p>
+      </div>
+      <div class="rule-ticket">
+        <div class="rule-num">4</div>
+        <p>Serve fast for more money, and keep a streak going for more still.</p>
+      </div>
+      <div class="rule-ticket">
+        <div class="rule-num">5</div>
+        <p>Nobody waits forever. Three customers walking off ends the day early.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MECHANICS — real numbers, not marketing fluff
+     ============================================================ -->
+<section id="mechanics">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">— The Rush —</span>
+      <h2>A 120-second day that gets meaner as it goes.</h2>
+      <p>Nothing below is rounded off for effect — this is what the code actually does.</p>
+    </div>
+    <div class="mech-grid">
+      <div class="mech-card">
+        <div class="mech-glyph">⏱</div>
+        <h3>Patience Runs Out Faster Late</h3>
+        <p>The first customer of the day waits <b>20 seconds</b>. Patience drops every 10 seconds the day runs, down to a floor of <b>9 seconds</b> — so the closing stretch is nothing like the opening bell.</p>
+      </div>
+      <div class="mech-card">
+        <div class="mech-glyph">💰</div>
+        <h3>Speed and Streak Both Pay</h3>
+        <p>Serve the moment a ticket lands and earn up to <b>+50%</b> on top of price. Chain correct orders and each one pays another <b>+25%</b>, stacking up to an <b>8-streak cap</b>.</p>
+      </div>
+      <div class="mech-card">
+        <div class="mech-glyph">🚫</div>
+        <h3>Three Strikes Closes the Stand</h3>
+        <p>A wrong tray costs the streak and 2 seconds off the clock — but the customer stays. Let <b>three</b> walk off from waiting too long, though, and the day ends early.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MENU — what the stand actually sells
+     ============================================================ -->
+<section id="menu">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="kicker">— On the Menu —</span>
+      <h2>Six dishes. Every one has a catch.</h2>
+      <p>Required ingredients make the dish. Optional ones — the ones a customer might or might not want — are the entire reason two hamburger tickets are never the same order.</p>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-item">
+        <div class="menu-icon" style="background:rgba(217,166,89,.18)"><i style="background:#6B4226;border-radius:50%;"></i></div>
+        <div><h4>Hamburger</h4><div class="price">$6.00</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon" style="background:rgba(199,97,71,.18)"><i style="background:#C76147;border-radius:50px;"></i></div>
+        <div><h4>Hot Dog</h4><div class="price">$4.50</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon" style="background:rgba(235,204,140,.2)"><i style="background:#EBCC8C;border-radius:50%;"></i></div>
+        <div><h4>Funnel Cake</h4><div class="price">$5.00</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon" style="background:rgba(212,26,46,.18)"><i style="background:#D41A2E;border-radius:50%;"></i></div>
+        <div><h4>Candy Apple</h4><div class="price">$3.00</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon" style="background:rgba(72,61,66,.28)"><i style="background:#483D42;border-radius:50%;"></i></div>
+        <div><h4>Fried Oreos</h4><div class="price">$4.00</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon" style="background:rgba(140,153,191,.2)"><i style="background:#8C99BF;border-radius:6px;"></i></div>
+        <div><h4>Soda</h4><div class="price">$2.50</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     STATS
+     ============================================================ -->
+<section class="stats">
+  <div class="wrap stats-row">
+    <div class="stat"><div class="num">3</div><div class="label">Seats at the stand,<br>always full</div></div>
+    <div class="stat"><div class="num">6</div><div class="label">Dishes on the menu,<br>never the same order twice</div></div>
+    <div class="stat"><div class="num">120s</div><div class="label">Length of one day,<br>start to closing time</div></div>
+    <div class="stat"><div class="num">×8</div><div class="label">Max streak multiplier,<br>one miss resets it</div></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CLOSING CTA
+     ============================================================ -->
+<section class="closing">
+  <div class="wrap">
+    <h2>Think you can run a stand?</h2>
+    <p>Ashley's Carnival Rush is in development for iOS. No release date yet — but the tray's already ticking.</p>
+    <a class="badge" href="#" aria-label="Coming to the App Store" style="display:inline-flex;">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.7 12.6c0-2.9 2.4-4.3 2.5-4.4-1.4-2-3.5-2.3-4.2-2.3-1.8-.2-3.5 1-4.4 1-.9 0-2.3-1-3.8-1-2 0-3.8 1.1-4.8 2.9-2.1 3.6-.5 8.9 1.5 11.8 1 1.4 2.1 3 3.6 2.9 1.5-.1 2-.9 3.7-.9s2.2.9 3.8.9c1.6 0 2.6-1.4 3.5-2.9.7-1.1 1.2-2.2 1.4-2.3-.1 0-2.8-1.1-2.8-4.3zm-3-8.5c.8-1 1.4-2.3 1.2-3.7-1.2.1-2.6.8-3.4 1.8-.8.9-1.5 2.3-1.3 3.6 1.3.1 2.7-.6 3.5-1.7z"/></svg>
+      <span class="badge-text"><small>Coming to the</small><strong>App Store</strong></span>
+    </a>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="wrap footer-row">
+    <span class="brand-word">Ashley's Carnival Rush</span>
+    <div class="footer-links">
+      <a href="#top">Top</a>
+      <a href="#how-to-play">How to Play</a>
+      <a href="#mechanics">The Rush</a>
+      <a href="#menu">Menu</a>
+      <a href="support.html">Support</a>
+      <a href="privacy.html">Privacy</a>
+    </div>
+    <p>© 2026 pfdatastack. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   AMBIENT MIDWAY LIGHTS — generated once, same pattern as the
+   game's own petal/decoration generators: randomized on load,
+   cheap, purely atmospheric.
+   ============================================================ */
+(function(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var host = document.getElementById('bulbs');
+  var COUNT = 24;
+  for (var i = 0; i < COUNT; i++){
+    var b = document.createElement('span');
+    b.className = 'bulb';
+    b.style.left = (Math.random() * 100) + 'vw';
+    b.style.top = (Math.random() * 100) + 'vh';
+    b.style.animationDelay = (Math.random() * -3.4) + 's';
+    host.appendChild(b);
+  }
+})();
+
+/* ============================================================
+   LIVING HUD MOCKUP — the hero "screenshot" is actually a tiny,
+   real simulation of the round loop (patience draining, a serve
+   firing, the clock ticking) built from the same numbers as
+   Balance.swift, not a static image. Deliberately just ONE
+   orchestrated moving piece on the page, not motion everywhere.
+   ============================================================ */
+(function(){
+  var ICONS = [
+    {name:'Bun', tint:'#D9A659', shape:'50%'},
+    {name:'Patty', tint:'#6B4226', shape:'50%'},
+    {name:'Cheese', tint:'#FCC73D', shape:'4px'},
+    {name:'Lettuce', tint:'#59B352', shape:'40%'},
+    {name:'Tomato', tint:'#DB3D33', shape:'50%'},
+    {name:'Frank', tint:'#C76147', shape:'50px'},
+    {name:'Mustard', tint:'#EDBF1A', shape:'50%'},
+    {name:'Ketchup', tint:'#CC2621', shape:'50%'},
+    {name:'Sprinkles', tint:'#F273BF', shape:'2px'},
+    {name:'Ice', tint:'#B3E1F2', shape:'3px'}
+  ];
+
+  var paletteHost = document.getElementById('mockPalette');
+  ICONS.forEach(function(ing){
+    var cell = document.createElement('div');
+    cell.className = 'mock-ing';
+    var dot = document.createElement('i');
+    dot.style.background = ing.tint;
+    dot.style.borderRadius = ing.shape;
+    cell.appendChild(dot);
+    paletteHost.appendChild(cell);
+  });
+
+  function seatHTML(title, icons, fraction, colour){
+    var iconHTML = icons.map(function(ing){
+      return '<i style="background:' + ing.tint + '"></i>';
+    }).join('');
+    return '<div class="mock-seat">' +
+      '<span class="ticket-title">' + title + '</span>' +
+      '<span class="mock-ticket-icons">' + iconHTML + '</span>' +
+      '<span class="mock-patience"><b style="width:' + (fraction*100) + '%;background:' + colour + '"></b></span>' +
+      '</div>';
+  }
+
+  var seatsHost = document.getElementById('mockSeats');
+  var trayHost = document.getElementById('mockTray');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function render(clockSec, earn, streak, pipsLost, seats, tray){
+    document.getElementById('mockClock').textContent =
+      Math.floor(clockSec/60) + ':' + String(clockSec%60).padStart(2,'0');
+    document.getElementById('mockClock').classList.toggle('urgent', clockSec <= 15);
+    document.getElementById('mockEarn').textContent = '$' + earn.toFixed(2);
+    document.getElementById('mockStreak').textContent = streak > 1 ? ('×' + streak) : '';
+    var pips = document.querySelectorAll('#mockPips i');
+    pips.forEach(function(p, i){ p.classList.toggle('lost', i < pipsLost); });
+
+    seatsHost.innerHTML = seats.map(function(s){
+      return seatHTML(s.title, s.icons, s.fraction, s.colour);
+    }).join('');
+
+    trayHost.innerHTML = tray.length
+      ? tray.map(function(ing){ return '<i style="background:' + ing.tint + '"></i>'; }).join('')
+      : '<span style="font-size:.55rem;color:rgba(255,247,236,.4)">Tap ingredients to build the order</span>';
+  }
+
+  // A short, hand-authored loop of frames -- not random per-view, so the
+  // hero always tells the same small story: a ticket comes in, gets built,
+  // gets served, streak climbs.
+  var burger = [ICONS[0], ICONS[1], ICONS[2]];
+  var dog = [ICONS[5], ICONS[6]];
+  var frames = [
+    {clock:47, earn:14.50, streak:2, lost:1, tray:[],
+     seats:[{title:'Hamburger', icons:burger, fraction:.8, colour:'#70D670'},
+            {title:'Hot Dog', icons:dog, fraction:.5, colour:'#FC9E3D'},
+            {title:'Funnel Cake', icons:[ICONS[3]], fraction:.2, colour:'#FA4747'}]},
+    {clock:46, earn:14.50, streak:2, lost:1, tray:[ICONS[0]],
+     seats:[{title:'Hamburger', icons:burger, fraction:.72, colour:'#70D670'},
+            {title:'Hot Dog', icons:dog, fraction:.42, colour:'#FC9E3D'},
+            {title:'Funnel Cake', icons:[ICONS[3]], fraction:.1, colour:'#FA4747'}]},
+    {clock:45, earn:14.50, streak:2, lost:1, tray:[ICONS[0], ICONS[1]],
+     seats:[{title:'Hamburger', icons:burger, fraction:.64, colour:'#70D670'},
+            {title:'Hot Dog', icons:dog, fraction:.34, colour:'#FC9E3D'},
+            {title:'Funnel Cake', icons:[ICONS[3]], fraction:.02, colour:'#FA4747'}]},
+    {clock:44, earn:14.50, streak:2, lost:1, tray:[ICONS[0], ICONS[1], ICONS[2]],
+     seats:[{title:'Hamburger', icons:burger, fraction:.56, colour:'#FC9E3D'},
+            {title:'Hot Dog', icons:dog, fraction:.26, colour:'#FA4747'},
+            {title:'Funnel Cake', icons:[ICONS[3]], fraction:0, colour:'#FA4747'}]},
+    {clock:43, earn:20.50, streak:3, lost:1, tray:[],
+     seats:[{title:'Empty seat', icons:[], fraction:0, colour:'#70D670'},
+            {title:'Hot Dog', icons:dog, fraction:.18, colour:'#FA4747'},
+            {title:'Fried Oreos', icons:[ICONS[8]], fraction:.9, colour:'#70D670'}]},
+  ];
+
+  var i = 0;
+  render.apply(null, [frames[0].clock, frames[0].earn, frames[0].streak, frames[0].lost, frames[0].seats, frames[0].tray]);
+
+  if (!reduced){
+    setInterval(function(){
+      i = (i + 1) % frames.length;
+      var f = frames[i];
+      render(f.clock, f.earn, f.streak, f.lost, f.seats, f.tray);
+    }, 1400);
+  }
+})();
+</script>
+
+</body>
+</html>
