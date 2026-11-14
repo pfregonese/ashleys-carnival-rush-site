@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Ashley's Carnival Rush — Everything on the ticket. Nothing else.</title>
-<meta name="description" content="A carnival food-stand memory rush for iOS. Customers order by ticket — build the tray exactly right, serve it fast, keep the streak alive. One extra pickle and it's coming back.">
+<meta name="description" content="A carnival food-stand memory rush for iOS. Customers order by ticket — build the plate exactly right, serve it fast, keep the streak alive. One extra pickle and it's coming back.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23291A4D'/%3E%3Cstop offset='0.5' stop-color='%236B2459'/%3E%3Cstop offset='1' stop-color='%23B84247'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M14 24 h36 a4 4 0 0 1 4 4 v2 h-44 v-2 a4 4 0 0 1 4 -4 z' fill='%23DE3D4D'/%3E%3Cpath d='M10 26 l6 -2 v6 l-6 -2 z M50 26 l6 -2 v6 l-6 -2 z' fill='%23DE3D4D'/%3E%3Crect x='14' y='30' width='9' height='6' fill='%23EDF2F7'/%3E%3Crect x='23' y='30' width='9' height='6' fill='%23DE3D4D'/%3E%3Crect x='32' y='30' width='9' height='6' fill='%23EDF2F7'/%3E%3Crect x='41' y='30' width='9' height='6' fill='%23DE3D4D'/%3E%3Ccircle cx='32' cy='48' r='6' fill='%23FCD959'/%3E%3C/svg%3E">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Ashley's Carnival Rush">
 <meta property="og:title" content="Ashley's Carnival Rush — Everything on the ticket. Nothing else.">
-<meta property="og:description" content="A carnival food-stand memory rush for iOS. Build the tray exactly right, serve it fast, keep the streak alive.">
+<meta property="og:description" content="A carnival food-stand memory rush for iOS. Build the plate exactly right, serve it fast, keep the streak alive.">
 
 <style>
   :root{
@@ -408,6 +408,7 @@
     * { transition-duration:.001ms !important; animation-duration:.001ms !important; }
   }
 </style>
+<link rel="stylesheet" href="carnival.css?v=c186529b">
 </head>
 <body>
 
@@ -438,7 +439,7 @@
     <a href="#mechanics">The Rush</a>
     <a href="#menu">Menu</a>
   </nav>
-  <a class="nav-cta" href="#top">Coming Soon</a>
+  <a class="nav-cta" href="https://apps.apple.com/us/app/ashleys-carnival-rush/id6806704252" target="_blank" rel="noopener">Get the App</a>
 </header>
 
 <!-- ============================================================
@@ -447,19 +448,22 @@
 <section class="hero" id="top">
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <span class="hero-eyebrow">Carnival Food Stand · iOS · Coming Soon</span>
-      <h1>Everything on the ticket. <span class="hi">Nothing else.</span></h1>
+      <span class="hero-eyebrow">Carnival Food Stand · iOS · Out Now</span>
+      <div class="marquee">
+        <span class="marquee-bulbs" aria-hidden="true"></span>
+        <h1>Everything on the ticket. <span class="hi">Nothing else.</span></h1>
+      </div>
       <p class="sub">
         A carnival food-stand memory rush. Every customer hands you a ticket —
-        tap the exact ingredients onto your tray, serve it fast, and don't let
+        tap the exact ingredients onto your plate, serve it fast, and don't let
         the streak drop. <b>One extra pickle and it's coming back.</b>
       </p>
       <div class="hero-ctas">
-        <a class="badge" href="#" aria-label="Coming to the App Store">
+        <a class="badge" href="https://apps.apple.com/us/app/ashleys-carnival-rush/id6806704252" target="_blank" rel="noopener" aria-label="Download on the App Store">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.7 12.6c0-2.9 2.4-4.3 2.5-4.4-1.4-2-3.5-2.3-4.2-2.3-1.8-.2-3.5 1-4.4 1-.9 0-2.3-1-3.8-1-2 0-3.8 1.1-4.8 2.9-2.1 3.6-.5 8.9 1.5 11.8 1 1.4 2.1 3 3.6 2.9 1.5-.1 2-.9 3.7-.9s2.2.9 3.8.9c1.6 0 2.6-1.4 3.5-2.9.7-1.1 1.2-2.2 1.4-2.3-.1 0-2.8-1.1-2.8-4.3zm-3-8.5c.8-1 1.4-2.3 1.2-3.7-1.2.1-2.6.8-3.4 1.8-.8.9-1.5 2.3-1.3 3.6 1.3.1 2.7-.6 3.5-1.7z"/></svg>
-          <span class="badge-text"><small>Coming to the</small><strong>App Store</strong></span>
+          <span class="badge-text"><small>Download on the</small><strong>App Store</strong></span>
         </a>
-        <span class="hero-note">Free to play. No ads, no purchases — yet.</span>
+        <span class="hero-note">Free to play. No ads, no in-app purchases — ever.</span>
       </div>
     </div>
 
@@ -478,6 +482,13 @@
           <div class="mock-palette" id="mockPalette"></div>
         </div>
       </div>
+      <div class="ticket-slot" aria-hidden="true">
+        <div class="print-ticket">
+          <div class="pt-top"><span>Admit one</span><span>Order up</span></div>
+          <div class="pt-main">Everything on the ticket.</div>
+          <div class="pt-sub">Nothing else. Not even one extra pickle.</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -489,7 +500,7 @@
   <div class="wrap">
     <div class="section-head center">
       <span class="kicker">— How to Play —</span>
-      <h2>Five rules. That's the whole game.</h2>
+      <h2>The rules. That's the whole game.</h2>
     </div>
     <div class="rules">
       <div class="rule-ticket">
@@ -498,19 +509,31 @@
       </div>
       <div class="rule-ticket">
         <div class="rule-num">2</div>
-        <p>Tap ingredients to build the order on your tray. The order you tap them in doesn't matter.</p>
+        <p>Tap ingredients to build the order on your plate. The order you tap them in doesn't matter.</p>
       </div>
       <div class="rule-ticket">
         <div class="rule-num">3</div>
-        <p>Tap the customer to serve them. Everything on the ticket, and nothing else — an extra pickle is a wrong order.</p>
+        <p>Ingredients are split across three counters — Sweets, Savory, and Drinks. Switching between them never clears your plate.</p>
       </div>
       <div class="rule-ticket">
         <div class="rule-num">4</div>
-        <p>Serve fast for more money, and keep a streak going for more still.</p>
+        <p>Tap the customer to serve them. Everything on the ticket, and nothing else — an extra pickle is a wrong order.</p>
       </div>
       <div class="rule-ticket">
         <div class="rule-num">5</div>
-        <p>Nobody waits forever. Three customers walking off ends the day early.</p>
+        <p>Serve fast for more money, and keep a streak going for more still.</p>
+      </div>
+      <div class="rule-ticket">
+        <div class="rule-num">6</div>
+        <p>Nobody waits forever. Enough customers walking off ends the day early.</p>
+      </div>
+      <div class="rule-ticket">
+        <div class="rule-num">7</div>
+        <p>Earn stars to unlock new fairs, and spend your takings on new things to sell.</p>
+      </div>
+      <div class="rule-ticket">
+        <div class="rule-num">8</div>
+        <p>Need a moment? Pause any time — the day waits right where it is.</p>
       </div>
     </div>
   </div>
@@ -530,7 +553,7 @@
       <div class="mech-card">
         <div class="mech-glyph">⏱</div>
         <h3>Patience Runs Out Faster Late</h3>
-        <p>The first customer of the day waits <b>20 seconds</b>. Patience drops every 10 seconds the day runs, down to a floor of <b>9 seconds</b> — so the closing stretch is nothing like the opening bell.</p>
+        <p>Every customer's patience drops as the day runs, down to a hard floor near closing — so the last stretch of a day is nothing like the opening bell. How forgiving that clock is depends on which stand you're working.</p>
       </div>
       <div class="mech-card">
         <div class="mech-glyph">💰</div>
@@ -539,8 +562,8 @@
       </div>
       <div class="mech-card">
         <div class="mech-glyph">🚫</div>
-        <h3>Three Strikes Closes the Stand</h3>
-        <p>A wrong tray costs the streak and 2 seconds off the clock — but the customer stays. Let <b>three</b> walk off from waiting too long, though, and the day ends early.</p>
+        <h3>Too Many Walk-Offs Closes the Stand</h3>
+        <p>A wrong plate costs the streak and 2 seconds off the clock — but the customer stays. Let enough walk off from waiting too long, though, and the day ends early instead of running the full clock.</p>
       </div>
     </div>
   </div>
@@ -553,33 +576,65 @@
   <div class="wrap">
     <div class="section-head center">
       <span class="kicker">— On the Menu —</span>
-      <h2>Six dishes. Every one has a catch.</h2>
+      <h2>Fourteen dishes. Every one has a catch.</h2>
       <p>Required ingredients make the dish. Optional ones — the ones a customer might or might not want — are the entire reason two hamburger tickets are never the same order.</p>
     </div>
     <div class="menu-grid">
       <div class="menu-item">
         <div class="menu-icon" style="background:rgba(217,166,89,.18)"><i style="background:#6B4226;border-radius:50%;"></i></div>
-        <div><h4>Hamburger</h4><div class="price">$6.00</div></div>
+        <div><h4>Hamburger</h4><div class="price">$10.00</div></div>
       </div>
       <div class="menu-item">
         <div class="menu-icon" style="background:rgba(199,97,71,.18)"><i style="background:#C76147;border-radius:50px;"></i></div>
-        <div><h4>Hot Dog</h4><div class="price">$4.50</div></div>
+        <div><h4>Hot Dog</h4><div class="price">$7.00</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon" style="background:rgba(224,168,90,.2)"><i style="background:#E0A85A;border-radius:6px;"></i></div>
+        <div><h4>Corn Dog</h4><div class="price">$11.00</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon" style="background:rgba(232,214,180,.2)"><i style="background:#E8D6B4;border-radius:6px;"></i></div>
+        <div><h4>Cheese Curds</h4><div class="price">$13.00</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon" style="background:rgba(160,90,50,.22)"><i style="background:#A05A32;border-radius:6px;"></i></div>
+        <div><h4>Smoked Turkey Leg</h4><div class="price">$20.00</div></div>
       </div>
       <div class="menu-item">
         <div class="menu-icon" style="background:rgba(235,204,140,.2)"><i style="background:#EBCC8C;border-radius:50%;"></i></div>
-        <div><h4>Funnel Cake</h4><div class="price">$5.00</div></div>
+        <div><h4>Funnel Cake</h4><div class="price">$8.00</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon" style="background:rgba(226,150,196,.2)"><i style="background:#E296C4;border-radius:50%;"></i></div>
+        <div><h4>Cotton Candy</h4><div class="price">$6.00</div></div>
       </div>
       <div class="menu-item">
         <div class="menu-icon" style="background:rgba(212,26,46,.18)"><i style="background:#D41A2E;border-radius:50%;"></i></div>
-        <div><h4>Candy Apple</h4><div class="price">$3.00</div></div>
+        <div><h4>Caramel Apple</h4><div class="price">$10.00</div></div>
       </div>
       <div class="menu-item">
         <div class="menu-icon" style="background:rgba(72,61,66,.28)"><i style="background:#483D42;border-radius:50%;"></i></div>
-        <div><h4>Fried Oreos</h4><div class="price">$4.00</div></div>
+        <div><h4>Deep-Fried Oreos</h4><div class="price">$13.00</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon" style="background:rgba(218,178,120,.2)"><i style="background:#DAB278;border-radius:50%;"></i></div>
+        <div><h4>Elephant Ear</h4><div class="price">$12.00</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon" style="background:rgba(250,224,120,.22)"><i style="background:#FAE078;border-radius:6px;"></i></div>
+        <div><h4>Deep-Fried Butter</h4><div class="price">$16.00</div></div>
       </div>
       <div class="menu-item">
         <div class="menu-icon" style="background:rgba(140,153,191,.2)"><i style="background:#8C99BF;border-radius:6px;"></i></div>
-        <div><h4>Soda</h4><div class="price">$2.50</div></div>
+        <div><h4>Soda</h4><div class="price">$4.00</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon" style="background:rgba(240,222,140,.22)"><i style="background:#F0DE8C;border-radius:6px;"></i></div>
+        <div><h4>Fresh-Squeezed Lemonade</h4><div class="price">$6.00</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon" style="background:rgba(160,110,70,.22)"><i style="background:#A06E46;border-radius:6px;"></i></div>
+        <div><h4>Root Beer Float</h4><div class="price">$12.00</div></div>
       </div>
     </div>
   </div>
@@ -591,7 +646,7 @@
 <section class="stats">
   <div class="wrap stats-row">
     <div class="stat"><div class="num">3</div><div class="label">Seats at the stand,<br>always full</div></div>
-    <div class="stat"><div class="num">6</div><div class="label">Dishes on the menu,<br>never the same order twice</div></div>
+    <div class="stat"><div class="num">14</div><div class="label">Dishes on the menu,<br>never the same order twice</div></div>
     <div class="stat"><div class="num">120s</div><div class="label">Length of one day,<br>start to closing time</div></div>
     <div class="stat"><div class="num">×8</div><div class="label">Max streak multiplier,<br>one miss resets it</div></div>
   </div>
@@ -603,10 +658,10 @@
 <section class="closing">
   <div class="wrap">
     <h2>Think you can run a stand?</h2>
-    <p>Ashley's Carnival Rush is in development for iOS. No release date yet — but the tray's already ticking.</p>
-    <a class="badge" href="#" aria-label="Coming to the App Store" style="display:inline-flex;">
+    <p>Ashley's Carnival Rush is on the App Store now — the plate's already ticking.</p>
+    <a class="badge" href="https://apps.apple.com/us/app/ashleys-carnival-rush/id6806704252" target="_blank" rel="noopener" aria-label="Download on the App Store" style="display:inline-flex;">
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.7 12.6c0-2.9 2.4-4.3 2.5-4.4-1.4-2-3.5-2.3-4.2-2.3-1.8-.2-3.5 1-4.4 1-.9 0-2.3-1-3.8-1-2 0-3.8 1.1-4.8 2.9-2.1 3.6-.5 8.9 1.5 11.8 1 1.4 2.1 3 3.6 2.9 1.5-.1 2-.9 3.7-.9s2.2.9 3.8.9c1.6 0 2.6-1.4 3.5-2.9.7-1.1 1.2-2.2 1.4-2.3-.1 0-2.8-1.1-2.8-4.3zm-3-8.5c.8-1 1.4-2.3 1.2-3.7-1.2.1-2.6.8-3.4 1.8-.8.9-1.5 2.3-1.3 3.6 1.3.1 2.7-.6 3.5-1.7z"/></svg>
-      <span class="badge-text"><small>Coming to the</small><strong>App Store</strong></span>
+      <span class="badge-text"><small>Download on the</small><strong>App Store</strong></span>
     </a>
   </div>
 </section>
@@ -755,5 +810,6 @@
 })();
 </script>
 
+<script src="carnival.js?v=235b93ca"></script>
 </body>
 </html>

@@ -1,0 +1,170 @@
+/* ================================================================
+   TICKET BOOTH — motion + tactile layer for Ashley's Carnival Rush
+   Loaded after the page's inline <style>; reuses its palette tokens
+   (--gold, --red, --purple-deep, --cream, --ink …) and fonts.
+   Playful on purpose: paper tickets, sticker cards, marquee bulbs.
+   Budget: transform/opacity animations only, loops pause off-screen,
+   prefers-reduced-motion lands everything in its final state.
+   ================================================================ */
+:root{
+  --spring: cubic-bezier(.34,1.56,.64,1);
+  --paper: #FFF7EC;
+  --paper-edge: #E9DCC6;
+}
+
+/* ── 1. MARQUEE around the headline ─────────────────────────── */
+.marquee{
+  position:relative; display:inline-block;
+  padding:26px 30px 24px;
+  margin:-4px 0 0 -30px;
+  border-radius:22px;
+  background:linear-gradient(180deg, rgba(28,18,48,.55), rgba(28,18,48,.35));
+  box-shadow:inset 0 0 0 3px rgba(252,217,89,.28), 0 18px 40px -18px rgba(0,0,0,.6);
+}
+.marquee-bulbs{ position:absolute; inset:0; pointer-events:none; }
+.mq-bulb{
+  position:absolute; width:9px; height:9px; margin:-4.5px 0 0 -4.5px; border-radius:50%;
+  background:#FFE58A;
+  box-shadow:0 0 6px 2px rgba(252,217,89,.75), 0 0 14px 3px rgba(252,217,89,.35);
+  opacity:.25;
+  animation:chase 1.2s steps(1,end) infinite;
+}
+.mq-bulb.p1{ animation-delay:-.4s; }
+.mq-bulb.p2{ animation-delay:-.8s; }
+@keyframes chase{ 0%{ opacity:1; } 33.34%{ opacity:.22; } }
+.marquee.mq-paused .mq-bulb{ animation-play-state:paused; }
+@media (max-width:920px){ .marquee{ margin:0 auto; padding:22px 18px 20px; } }
+
+/* ── 2. HERO: a ticket prints out of the phone ──────────────── */
+.phone-stage{ position:relative; padding-bottom:118px; }
+/* the slot sits just under the phone, so the ticket feeds out of it */
+.ticket-slot{
+  position:absolute; left:50%; top:calc(100% - 132px); width:min(250px,66vw);
+  transform:translateX(-50%);
+  overflow:hidden; padding:0 8px 18px;   /* room for the ticket's shadow */
+  pointer-events:none;
+}
+.print-ticket{
+  position:relative;
+  background:var(--paper); color:var(--ink);
+  border-radius:4px 4px 10px 10px;
+  padding:14px 16px 16px;
+  font-family:var(--font-body);
+  box-shadow:0 10px 0 -4px var(--paper-edge), 0 16px 24px -10px rgba(0,0,0,.5);
+  transform:translateY(-105%);
+  /* the bottom edge is a perforated tear */
+  -webkit-mask:radial-gradient(circle 5px at 8px 100%, transparent 98%, #000) -8px 0/16px 100% repeat-x;
+          mask:radial-gradient(circle 5px at 8px 100%, transparent 98%, #000) -8px 0/16px 100% repeat-x;
+}
+.print-ticket.printing{ animation:printOut 1.6s steps(9,end) .9s forwards; }
+@keyframes printOut{ to{ transform:translateY(0); } }
+.print-ticket .pt-top{
+  display:flex; justify-content:space-between; align-items:center;
+  font:700 .62rem/1 var(--font-body); letter-spacing:.2em; text-transform:uppercase; color:var(--red-deep);
+  border-bottom:1.5px dashed rgba(28,18,48,.25); padding-bottom:8px; margin-bottom:8px;
+}
+.print-ticket .pt-main{ font-family:var(--font-display); font-size:1.05rem; line-height:1.15; color:var(--ink); }
+.print-ticket .pt-sub{ font-size:.72rem; font-weight:600; color:#6B5A7E; margin-top:4px; }
+.phone{ cursor:pointer; }
+
+/* ── 3. HOW TO PLAY: paper tickets that tear in ─────────────── */
+.rule-ticket{
+  background:var(--paper) !important;
+  border:none !important;
+  border-radius:12px !important;
+  color:var(--ink);
+  padding:28px 16px 20px !important;
+  box-shadow:0 6px 0 var(--paper-edge), 0 14px 22px -10px rgba(0,0,0,.55);
+  transform:rotate(var(--tilt,0deg));
+  transition:transform .35s var(--spring), box-shadow .35s var(--spring);
+}
+.rule-ticket:nth-child(odd){ --tilt:-1.6deg; }
+.rule-ticket:nth-child(even){ --tilt:1.4deg; }
+.rule-ticket:nth-child(3n){ --tilt:-.6deg; }
+.rule-ticket::before, .rule-ticket::after{ background:var(--purple-deep) !important; }
+/* perforation line between the number stub and the rule text */
+.rule-ticket .rule-num{ position:relative; margin-bottom:18px !important; box-shadow:0 4px 0 var(--red-deep); }
+.rule-ticket .rule-num::after{
+  content:""; position:absolute; left:50%; top:calc(100% + 9px);
+  width:150px; transform:translateX(-50%);
+  border-top:2px dashed rgba(28,18,48,.22);
+}
+.rule-ticket p{ color:#3D2E52 !important; font-weight:500; }
+.rule-ticket:hover{ transform:rotate(0deg) translateY(-6px) scale(1.03); box-shadow:0 10px 0 var(--paper-edge), 0 22px 30px -12px rgba(0,0,0,.6); }
+.js-reveal .rule-ticket.pending{ opacity:0; transform:translateY(46px) rotate(calc(var(--tilt,0deg) * -6)) scale(.88); }
+.rule-ticket.torn{ animation:tearIn .6s var(--spring) both; animation-delay:var(--d,0ms); }
+@keyframes tearIn{
+  0%{ opacity:0; transform:translateY(46px) rotate(calc(var(--tilt,0deg) * -6)) scale(.88); }
+  60%{ opacity:1; }
+  100%{ opacity:1; transform:rotate(var(--tilt,0deg)); }
+}
+
+/* ── 4. THE RUSH: chunky sticker cards ──────────────────────── */
+.mech-grid{ gap:22px !important; background:none !important; border:none !important; overflow:visible !important; }
+.mech-card{
+  background:#3A2466 !important; border-radius:18px;
+  border:3px solid #1C1230;
+  box-shadow:7px 7px 0 var(--gold);
+  transition:transform .3s var(--spring), box-shadow .3s var(--spring);
+}
+.mech-card:nth-child(2){ box-shadow:7px 7px 0 var(--red); }
+.mech-card:nth-child(3){ box-shadow:7px 7px 0 var(--good); }
+.mech-card:hover{ transform:translate(-3px,-3px) rotate(-.6deg); box-shadow:11px 11px 0 var(--gold); }
+.mech-card:nth-child(2):hover{ box-shadow:11px 11px 0 var(--red); }
+.mech-card:nth-child(3):hover{ box-shadow:11px 11px 0 var(--good); }
+.mech-glyph{ transition:transform .4s var(--spring); }
+.mech-card:hover .mech-glyph{ transform:rotate(-12deg) scale(1.15); }
+
+/* ── 5. MENU: a board whose items flip in, then bounce ──────── */
+.menu-grid{ perspective:900px; }
+.menu-item{
+  background:#2F1D57 !important; border:3px solid #1C1230 !important; border-radius:16px !important;
+  box-shadow:0 6px 0 #1C1230;
+  transform-origin:50% 0;
+  transition:transform .3s var(--spring), box-shadow .3s var(--spring) !important;
+}
+.menu-item:hover{ transform:translateY(-5px) !important; box-shadow:0 11px 0 #1C1230; }
+.menu-item:hover .menu-icon{ animation:wobble .6s var(--spring); }
+@keyframes wobble{
+  0%{ transform:rotate(0) scale(1); } 30%{ transform:rotate(-14deg) scale(1.15); }
+  60%{ transform:rotate(9deg) scale(1.05); } 100%{ transform:rotate(0) scale(1); }
+}
+.js-reveal .menu-item.pending{ opacity:0; transform:rotateX(-92deg); }
+.menu-item.flipped{ animation:flipIn .7s var(--spring) both; animation-delay:var(--d,0ms); }
+@keyframes flipIn{ from{ opacity:0; transform:rotateX(-92deg); } 40%{ opacity:1; } to{ opacity:1; transform:rotateX(0); } }
+
+/* ── 6. STATS: ticket-counter digits ───────────────────────── */
+.stat .num{ display:inline-flex; align-items:flex-end; justify-content:center; height:1.2em; line-height:1.2; overflow:hidden; }
+.roll{ display:inline-block; height:1.2em; overflow:hidden; }
+.roll i{ display:flex; flex-direction:column; font-style:normal; transition:transform 1.5s var(--spring); transition-delay:var(--d,0ms); }
+.roll b{ display:block; height:1.2em; font-weight:inherit; }
+.stats .stat{
+  background:#2F1D57; border:3px solid #1C1230; border-radius:16px; padding:22px 12px 18px;
+  box-shadow:0 6px 0 #1C1230;
+}
+
+/* ── 7. Section heads pop in ──────────────────────────────── */
+.js-reveal .section-head.pending, .js-reveal .closing h2.pending{ opacity:0; transform:translateY(24px) scale(.97); }
+.section-head.popped, .closing h2.popped{ animation:popIn .6s var(--spring) both; }
+@keyframes popIn{ from{ opacity:0; transform:translateY(24px) scale(.97); } to{ opacity:1; transform:none; } }
+
+/* ── 8. CONFETTI on the download badge ──────────────────────── */
+.confetti{
+  position:fixed; z-index:200; width:9px; height:14px; border-radius:2px; pointer-events:none;
+  left:var(--x); top:var(--y); background:var(--c);
+  animation:confetti 1.1s cubic-bezier(.2,.7,.4,1) forwards;
+}
+@keyframes confetti{
+  0%{ transform:translate(0,0) rotate(0); opacity:1; }
+  100%{ transform:translate(var(--dx), var(--dy)) rotate(var(--r)); opacity:0; }
+}
+.badge{ position:relative; }
+.badge:hover{ animation:badgeJiggle .5s var(--spring); }
+@keyframes badgeJiggle{ 0%{ transform:translateY(-2px) rotate(0); } 35%{ transform:translateY(-3px) rotate(-3deg); } 70%{ transform:translateY(-2px) rotate(2deg); } 100%{ transform:translateY(-2px) rotate(0); } }
+
+@media (prefers-reduced-motion: reduce){
+  .mq-bulb{ animation:none; opacity:.85; }
+  .print-ticket{ transform:none; animation:none !important; }
+  .js-reveal .pending{ opacity:1 !important; transform:none !important; }
+  .confetti{ display:none; }
+}
