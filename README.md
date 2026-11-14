@@ -17,9 +17,3 @@ each page is self-contained: an inline SVG favicon and Google Fonts, no local
 assets and no build step.
 
 Contact: support@pfdatastack.com
-
-## Moved (2026-11-14)
-
-The site now lives at https://pfdatastack.com/ashleys-carnival-rush/. Each page
-here forwards to its counterpart there and keeps its old text, so the App Store
-links that still point here keep working until 1.3 moves them.
