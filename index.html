@@ -311,7 +311,7 @@
   /* ============================================================
      MECHANICS — 3 cards, real numbers from Balance.swift
      ============================================================ */
-  .mech-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(255,247,236,.1); border:1px solid rgba(255,247,236,.1); border-radius:18px; overflow:hidden; }
+  .mech-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:rgba(255,247,236,.1); border:1px solid rgba(255,247,236,.1); border-radius:18px; overflow:hidden; }
   .mech-card{ background:rgba(41,26,77,.55); padding:38px 30px; }
   .mech-glyph{
     width:44px; height:44px; border-radius:12px;
@@ -327,6 +327,32 @@
      MENU
      ============================================================ */
   .menu-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; }
+
+  /* ============================================================
+     SCREENSHOTS — the real 1.3 App Store set, a horizontal strip
+     that scrolls on narrow screens rather than squeezing 10 tall
+     screenshots into a grid.
+     ============================================================ */
+  .shots-strip{
+    display:flex; gap:18px; overflow-x:auto; padding-bottom:12px;
+    scroll-snap-type:x proximity;
+    -webkit-overflow-scrolling:touch;
+  }
+  .shots-strip::-webkit-scrollbar{ height:8px; }
+  .shots-strip::-webkit-scrollbar-thumb{ background:rgba(255,247,236,.2); border-radius:8px; }
+  .shot{
+    flex:0 0 auto; width:200px; scroll-snap-align:start;
+  }
+  .shot img{
+    width:100%; border-radius:16px; border:1px solid rgba(255,247,236,.12);
+    box-shadow:0 14px 30px -14px rgba(0,0,0,.6);
+  }
+  .shot p{
+    margin-top:10px; font-size:.82rem; color:var(--cream-dim); text-align:center;
+  }
+  @media (max-width:600px){
+    .shot{ width:168px; }
+  }
   .menu-item{
     background:rgba(255,255,255,.07);
     border:1px solid rgba(255,247,236,.1);
@@ -437,6 +463,7 @@
   <nav class="nav-links">
     <a href="#how-to-play">How to Play</a>
     <a href="#mechanics">The Rush</a>
+    <a href="#screenshots">Screenshots</a>
     <a href="#menu">Menu</a>
   </nav>
   <a class="nav-cta" href="https://apps.apple.com/us/app/ashleys-carnival-rush/id6806704252" target="_blank" rel="noopener">Get the App</a>
@@ -565,6 +592,66 @@
         <h3>Too Many Walk-Offs Closes the Stand</h3>
         <p>A wrong plate costs the streak and 2 seconds off the clock — but the customer stays. Let enough walk off from waiting too long, though, and the day ends early instead of running the full clock.</p>
       </div>
+      <div class="mech-card">
+        <div class="mech-glyph">🔔</div>
+        <h3>Rush Hour</h3>
+        <p>On some rounds from the County Fair on, a bell clangs partway through the day and the crowd surges: customers come in twice as fast, and every order pays <b>+50%</b> for 20 seconds. Not at the Hot Dog Stand — learn the ropes first.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCREENSHOTS — real 1.3 App Store images
+     ============================================================ -->
+<section id="screenshots">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="kicker">— 1.3: Redrawn —</span>
+      <h2>Every bite redrawn. The crowd talks back.</h2>
+      <p>All 48 ingredients and 14 dishes now match, as one set. 36 customers speak — a thank-you, a complaint, a goodbye — with a voices switch on the map if you'd rather it stay quiet.</p>
+    </div>
+    <div class="shots-strip">
+      <figure class="shot">
+        <img src="screenshots/01-title.jpg" alt="Ashley's Carnival Rush title screen" loading="lazy" width="520" height="1130">
+        <p>The carnival, redrawn.</p>
+      </figure>
+      <figure class="shot">
+        <img src="screenshots/02-map.jpg" alt="The stand-selection map, with the new voices switch" loading="lazy" width="520" height="1130">
+        <p>Six stands to unlock. The voices switch lives right here.</p>
+      </figure>
+      <figure class="shot">
+        <img src="screenshots/02b-first-stand.jpg" alt="The Hot Dog Stand, the first stand in the game" loading="lazy" width="520" height="1130">
+        <p>The Hot Dog Stand. No Rush Hour yet — learn the ropes first.</p>
+      </figure>
+      <figure class="shot">
+        <img src="screenshots/03-todays-menu.jpg" alt="Today's menu board before service opens" loading="lazy" width="520" height="1130">
+        <p>Today's menu, before the gates open.</p>
+      </figure>
+      <figure class="shot">
+        <img src="screenshots/04-mid-round.jpg" alt="Building an order mid-round, with three customers waiting" loading="lazy" width="520" height="1130">
+        <p>Everything on the ticket. Nothing else.</p>
+      </figure>
+      <figure class="shot">
+        <img src="screenshots/05-building.jpg" alt="Tapping ingredients onto the plate" loading="lazy" width="520" height="1130">
+        <p>Three customers, three patience clocks, all running at once.</p>
+      </figure>
+      <figure class="shot">
+        <img src="screenshots/06-patience.jpg" alt="A customer's patience ring almost empty" loading="lazy" width="520" height="1130">
+        <p>Patience runs out. A walk-off costs the streak, not a life.</p>
+      </figure>
+      <figure class="shot">
+        <img src="screenshots/07-results.jpg" alt="The closing-time results screen" loading="lazy" width="520" height="1130">
+        <p>Closing time. Every number on this screen is real.</p>
+      </figure>
+      <figure class="shot">
+        <img src="screenshots/08-shop.jpg" alt="The shop screen for hiring staff and stocking the next stand" loading="lazy" width="520" height="1130">
+        <p>Hire staff, or stock the next stand.</p>
+      </figure>
+      <figure class="shot">
+        <img src="screenshots/09-wardrobe.jpg" alt="Customizing the stand's awning, bunting, lights and crowd" loading="lazy" width="520" height="1130">
+        <p>Customize the stand, awning to crowd.</p>
+      </figure>
     </div>
   </div>
 </section>
@@ -676,6 +763,7 @@
       <a href="#top">Top</a>
       <a href="#how-to-play">How to Play</a>
       <a href="#mechanics">The Rush</a>
+      <a href="#screenshots">Screenshots</a>
       <a href="#menu">Menu</a>
       <a href="support.html">Support</a>
       <a href="privacy.html">Privacy</a>
